@@ -1,0 +1,19 @@
+Hardware Specs for the VGA Card:
+
+- Resolution: 320x240
+- Color Depth: 8-bit (256 colors)
+- Pixel Format: 3 bits for Red, 3 bits for Green, 2 bits for Blue (R3G3B2)
+- Refresh Rate: 60 Hz
+- Interface: SPI for commands and pixel data
+- Controller: Raspberry Pi Pico (RP2040)
+- PIO for generating VGA signals
+- UART for receiving commands from the host computer
+
+
+Here is a simple schematic of the design
+its very simple: it uses the pico and 3 of each 330 ohm and 680 ohm resistors
+
+Pico Pinout:
+- GPIO 0-5: RGB pixel data (6 bits total)
+- GPIO 6: HSYNC
+- GPIO 7: VSYNC

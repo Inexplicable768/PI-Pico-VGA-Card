@@ -1,0 +1,118 @@
+DATA SHEET: Interfacing a Raspberry Pi Pico with an Arduino Uno for VGA Output
+
+
+-----------------------------------------------------------------------------
+
+
+To Compile:
+
+run make in the firmware-pico directory. This will build the firmware and create a .uf2 file that can be flashed to the Raspberry Pi Pico.
+make sure you have:
+- The Raspberry Pi Pico SDK installed and properly set up on your system.
+- The necessary toolchain for compiling C code for the Pico (e.g., arm-none-eabi-gcc).
+- The PIO assembler for compiling the VGA PIO code.
+
+
+To Flash:
+
+1. Hold down the BOOTSEL button on the Raspberry Pi Pico and connect it to your computer via USB. This will put the Pico into bootloader mode.
+2. Copy the generated .uf2 file from the firmware-pico directory to the RPI-RP2 drive that appears on your computer when the Pico is in bootloader mode.
+3. The Pico will automatically flash the firmware and restart. You should see the VGA output on your monitor if everything is working correctly.
+4. you can connect the VGA output to a monitor using a VGA cable and the appropriate adapter if necessary.
+
+To Send Commands to the Pico:
+
+To send UART commands to the Pico, you can use a terminal program such as PuTTY or minicom. Connect to the appropriate COM port at a baud rate of 115200. You can then type commands to control the VGA output, such as changing colors or drawing shapes. The specific commands and their functionality will depend on how you have implemented the firmware.
+you can also use a microcontroller or another computer to send commands to the Pico via UART. Just make sure to connect the TX and RX pins correctly and set the baud rate to 115200.
+
+When using an ardunio uno these are the connections to the pi pico:
+
+ARDUINO UNO     PI PICO
+TX (D1)	        GP1 (RX)
+GND	            GND
+
+Pinout for VGA output from the Pico:
+All outputs are 3.3V, so we will use a voltage divider to get the appropriate levels for VGA signals.
+
+Name    Pin Name	Pin Number	Description
+HSYNC	GP16	Pin 21	    Horizontal sync
+VSYNC	GP17	Pin 22  	Vertical sync
+R0	    GP18	Pin 24      Red bit 0
+R1	    GP19	Pin 25	    Red bit 1
+G0	    GP20	Pin 26	    Green bit 0
+G1	    GP21	Pin 27      Green bit 1
+B0	    GP22	Pin 29      Blue bit 0
+B1	    GP23	Pin 30	    Blue bit 1
+
+
+
+To Power:
+
+Pico:
+VBUS - 5V from supply or USB
+GND - Ground 
+3V3 - Output from Pico, can be used to power other components 
+
+Here is how you can power the Pico and the Uno together:
+
+5V SUPPLY +  ─────────┬──→ Pico VBUS
+                      └──→ Uno 5V
+
+5V SUPPLY GND ────────┬──→ Pico GND
+                       └──→ Uno GND
+
+
+MAKE SURE COMMON GROUND IS ESTABLISHED BETWEEN THE PICO AND UNO 
+
+Vga Wiring:
+To get a voltage of around 0.7V for the VGA signals, we can use a voltage divider with the following resistor values:
+MSB = 470Ω
+LSB = 1kΩ
+
+RED
+GP19 ── 470Ω ┐
+              ├──→ VGA Pin 1
+GP18 ── 1kΩ ──┘
+
+GREEN
+GP21 ── 470Ω ┐
+              ├──→ VGA Pin 2
+GP20 ── 1kΩ ──┘
+
+BLUE
+GP23 ── 470Ω ┐
+              ├──→ VGA Pin 3
+GP22 ── 1kΩ ──┘
+
+For the sync signals, we can use a single resistor to limit the current and protect the Pico's GPIO pins:
+Place a small resistor (e.g., 220Ω) in series with each sync line to limit the current and protect the Pico's GPIO pins.
+
+FOR GROUNDING:
+connect the VGA ground (Pin 5) to the common ground of the Pico and Uno. This will ensure that all components share a common reference point for voltage levels.
+
+NOTE:  basically the command output for the uno outputs 5v but the pico accepts 3.3v for high so we need to divide the voltage
+
+Uno TX ── 1.8kΩ ──+──→ Pico RX
+                  |
+                 3.3kΩ
+                  |
+                 GND
+
+ALternatively, you can use a level shifter or a voltage divider to step down the 5V signal from the Uno TX to 3.3V for the Pico RX.
+
+Summary:
+
+ Shared ground everywhere
+
+ 5V to Pico VBUS
+
+ 5V to Uno 5V
+
+ Voltage divider on Uno TX
+
+ Resistors on RGB lines
+
+ Sync direct to Pico
+
+
+

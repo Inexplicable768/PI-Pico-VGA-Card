@@ -1,0 +1,7 @@
+.program vga_rgb
+.side_set 1
+
+; Shift 6-bit pixels continuously
+.wrap_target
+    out pins, 6     side 1
+.wrap

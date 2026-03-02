@@ -1,0 +1,2 @@
+Ideas:
+- Make the pico firmware use binary sending instead of ascii strings and make it memory mapped.
